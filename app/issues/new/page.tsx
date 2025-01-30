@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import { TextField, Heading, Callout } from "@radix-ui/themes";
+import { TextField, Heading, Callout, Spinner } from "@radix-ui/themes";
 import { Button } from "@radix-ui/themes";
 import SimpleMDE from "react-simplemde-editor";
 import { useForm, Controller } from "react-hook-form";
@@ -20,7 +20,7 @@ const NewIssuePage = () => {
     register,
     control,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid, isSubmitting },
   } = useForm<IssueForm>({
     resolver: zodResolver(createIssueSchema),
   });
@@ -61,8 +61,19 @@ const NewIssuePage = () => {
         />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
         <div className="flex justify-end">
-          <Button type="submit" variant="solid">
-            Submit
+          <Button
+            type="submit"
+            variant="solid"
+            disabled={!isValid || isSubmitting}
+          >
+            {!isSubmitting ? (
+              "Submit"
+            ) : (
+              <>
+                <Spinner />
+                Submitting
+              </>
+            )}
           </Button>
         </div>
       </form>
