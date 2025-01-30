@@ -15,16 +15,29 @@ import "easymde/dist/easymde.min.css";
 type IssueForm = z.infer<typeof createIssueSchema>;
 
 const NewIssuePage = () => {
+  const [error, setError] = useState("");
+
   const router = useRouter();
+
   const {
     register,
     control,
     handleSubmit,
-    formState: { errors, isValid, isSubmitting },
+    formState: { errors, isSubmitting },
   } = useForm<IssueForm>({
     resolver: zodResolver(createIssueSchema),
   });
-  const [error, setError] = useState("");
+
+  const onSubmit = handleSubmit(async (data) => {
+    setError("");
+
+    try {
+      await axios.post("/api/issues", data);
+      router.push("/issues");
+    } catch (error) {
+      setError("An unexpected error occurred");
+    }
+  });
 
   return (
     <div className="max-w-xl">
@@ -33,19 +46,7 @@ const NewIssuePage = () => {
           <Callout.Text>{error}</Callout.Text>
         </Callout.Root>
       )}
-      <form
-        className="space-y-4"
-        onSubmit={handleSubmit(async (data) => {
-          setError("");
-
-          try {
-            await axios.post("/api/issues", data);
-            router.push("/issues");
-          } catch (error) {
-            setError("An unexpected error occurred");
-          }
-        })}
-      >
+      <form className="space-y-4" onSubmit={onSubmit}>
         <Heading size="7">Create New Issue</Heading>
         <TextField.Root placeholder="Title" {...register("title")}>
           <TextField.Slot />
@@ -61,11 +62,7 @@ const NewIssuePage = () => {
         />
         <ErrorMessage>{errors.description?.message}</ErrorMessage>
         <div className="flex justify-end">
-          <Button
-            type="submit"
-            variant="solid"
-            disabled={!isValid || isSubmitting}
-          >
+          <Button type="submit" variant="solid" disabled={isSubmitting}>
             {!isSubmitting ? (
               "Submit"
             ) : (
