@@ -4,7 +4,6 @@ import "./globals.css";
 import NavBar from "./NavBar";
 import "@radix-ui/themes/styles.css";
 import { Theme } from "@radix-ui/themes";
-import { ThemePanel } from "@radix-ui/themes";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

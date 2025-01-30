@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { TextField, Heading, Callout, Spinner } from "@radix-ui/themes";
 import { Button } from "@radix-ui/themes";
-import SimpleMDE from "react-simplemde-editor";
 import { useForm, Controller } from "react-hook-form";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -10,7 +9,12 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { createIssueSchema } from "@/app/validationSchema";
 import { z } from "zod";
 import ErrorMessage from "@/app/components/ErrorMessage";
+import dynamic from "next/dynamic";
 import "easymde/dist/easymde.min.css";
+
+const SimpleMDE = dynamic(() => import("react-simplemde-editor"), {
+  ssr: false,
+});
 
 type IssueForm = z.infer<typeof createIssueSchema>;
 
@@ -36,6 +40,7 @@ const NewIssuePage = () => {
       router.push("/issues");
     } catch (error) {
       setError("An unexpected error occurred");
+      console.error(error);
     }
   });
 
