@@ -11,7 +11,7 @@ const IssuesPage = async () => {
 
   return (
     <div>
-      <div>
+      <div className="flex justify-end">
         <Link href="/issues/new">
           <Button variant="solid">New Issue</Button>
         </Link>
